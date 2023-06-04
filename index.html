@@ -86,7 +86,13 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ac6e56581b02498ab02deee2fbc190f1"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>  
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -95,13 +101,142 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (firstNum < secondNum) {
+          throw new ToughLuckError("The first number must be greater than or equal to the second");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        console.group("Error!");
+        console.error("Error caught in try/catch block!");
+        console.error(`Error name: ${error.name}`);
+        console.error(`Error message: ${error.message}`);
+        console.error(`Error location: ${error.stack}`);
+        console.groupEnd("Error!");
+      }
+      finally {
+        console.log("Make better code!");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    let arrayFuncs = [
+      consoleLog,
+      consoleError, 
+      consoleCount, 
+      consoleWarn, 
+      consoleAssert, 
+      consoleClear, 
+      consoleDir, 
+      consoleDirXML, 
+      consoleGroupStart, 
+      consoleGroupEnd,
+      consoleTable,
+      consoleStartTimer, 
+      consoleEndTimer,
+      consoleTrace, 
+      consoleGlobalError
+    ];
+
+    for (let i = 0; i < errorBtns.length; i++) {
+      errorBtns[i].addEventListener("click", arrayFuncs[i]);
+    }
+
+    let labelConsoleGroup = "Grouped Elements";
+
+    let array = [
+      {
+        name: "Alice Cooper", 
+        age: 24
+      }, 
+      {
+        name: "Ben Kingsley", 
+        age: 31
+      }, 
+      {
+        name: "Salaem Bin-Shaad", 
+        age: 18
+      }
+    ];
+
+    class ToughLuckError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ToughLuckError";
+      }
+    }
+
+    window.onerror = function(message, url, line, col, error) {
+      console.log(`${message}\n At ${line}:${col} of ${url}`);
+    };
+
+    function consoleLog() {
+      console.log("This is some text to log");
+    }
+
+    function consoleError() {
+      console.error("This is an error");
+    }
+
+    function consoleCount() {
+      console.count("Count");
+    }
+
+    function consoleWarn() {
+      console.warn("This is a warning");
+    }
+
+    function consoleAssert() {
+      const x = 7;
+      const y = 2;
+      const reason = 'y is expected to be divisible by x';
+      console.assert((x % y) == 0, {x, y, reason});
+    }
+
+    function consoleClear() {
+      console.clear();
+    }
+
+    function consoleDir() {
+      console.dir(document.body);
+    }
+
+    function consoleDirXML() {
+      console.dirxml(document.body);
+    }
+
+    function consoleGroupStart() {
+      console.group(labelConsoleGroup);
+    }
+
+    function consoleGroupEnd() {
+      console.groupEnd(labelConsoleGroup);
+    }
+
+    function consoleTable() {
+      console.table(array);
+    }
+
+    function consoleStartTimer() {
+      console.time();
+    }
+
+    function consoleEndTimer() {
+      console.timeEnd();
+    }
+
+    function consoleTrace() {
+      const doSomething1 = () => { doSomething2(); };
+      const doSomething2 = () => { doSomething3(); };
+      const doSomething3 = () => { doSomething4(); };
+      const doSomething4 = () => { console.trace(); };
+      doSomething1();
+    }
+
+    function consoleGlobalError() {
+      gonnaGoBoom();
+    }
   </script>
 </body>
 
